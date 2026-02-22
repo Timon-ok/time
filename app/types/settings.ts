@@ -1,4 +1,5 @@
 export type FontSize = "sm" | "md" | "lg";
+export type Theme = "dark" | "light";
 
 export const fontSizeMap: Record<FontSize, string> = {
   sm: "clamp(2rem, 9vw, 7rem)",
@@ -38,6 +39,7 @@ export interface ClockSettings {
   fontSize: FontSize;
   dateFontSize: FontSize;
   timezone: string;
+  theme: Theme;
 }
 
 export const defaultSettings: ClockSettings = {
@@ -47,4 +49,5 @@ export const defaultSettings: ClockSettings = {
   fontSize: "md",
   dateFontSize: "md",
   timezone: "Europe/Zurich",
+  theme: "dark",
 };

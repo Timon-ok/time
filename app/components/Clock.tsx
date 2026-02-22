@@ -48,9 +48,10 @@ export default function Clock({ settings }: Props) {
         style={{
           fontSize: fontSizeMap[settings.fontSize],
           fontWeight: 200,
-          color: "#fff",
+          color: settings.theme === "dark" ? "#fff" : "#000",
           letterSpacing: "-0.02em",
           lineHeight: 1,
+          transition: "color 0.3s ease",
         }}
       >
         {time}
@@ -60,10 +61,11 @@ export default function Clock({ settings }: Props) {
           style={{
             fontSize: dateSizeMap[settings.dateFontSize],
             fontWeight: 300,
-            color: "rgba(255,255,255,0.35)",
+            color: settings.theme === "dark" ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.4)",
             marginTop: "1.5rem",
             letterSpacing: "0.05em",
             textTransform: "uppercase",
+            transition: "color 0.3s ease",
           }}
         >
           {date}

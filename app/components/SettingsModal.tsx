@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ClockSettings, FontSize, TIMEZONE_OPTIONS } from "../types/settings";
+import { ClockSettings, FontSize, Theme, TIMEZONE_OPTIONS } from "../types/settings";
 
 interface Props {
   open: boolean;
@@ -10,14 +10,44 @@ interface Props {
   onChange: (updated: Partial<ClockSettings>) => void;
 }
 
+interface Colors {
+  text: string; textMuted: string; textFaint: string; divider: string;
+  toggleOn: string; toggleOff: string; toggleThumb: string;
+  sizeActiveBorder: string; sizeInactiveBorder: string; sizeActiveBg: string;
+  sizeActiveText: string; sizeInactiveText: string;
+  navBorder: string; navBg: string;
+  tzActiveBg: string; tzActiveText: string; tzInactiveText: string;
+}
+
+function getColors(isDark: boolean): Colors {
+  return isDark ? {
+    text: "#fff", textMuted: "rgba(255,255,255,0.4)", textFaint: "rgba(255,255,255,0.35)",
+    divider: "rgba(255,255,255,0.06)",
+    toggleOn: "rgba(255,255,255,0.85)", toggleOff: "rgba(255,255,255,0.15)", toggleThumb: "#000",
+    sizeActiveBorder: "rgba(255,255,255,0.5)", sizeInactiveBorder: "rgba(255,255,255,0.1)",
+    sizeActiveBg: "rgba(255,255,255,0.12)", sizeActiveText: "#fff", sizeInactiveText: "rgba(255,255,255,0.4)",
+    navBorder: "rgba(255,255,255,0.08)", navBg: "rgba(255,255,255,0.04)",
+    tzActiveBg: "rgba(255,255,255,0.1)", tzActiveText: "#fff", tzInactiveText: "rgba(255,255,255,0.55)",
+  } : {
+    text: "#111", textMuted: "rgba(0,0,0,0.4)", textFaint: "rgba(0,0,0,0.35)",
+    divider: "rgba(0,0,0,0.07)",
+    toggleOn: "rgba(0,0,0,0.75)", toggleOff: "rgba(0,0,0,0.12)", toggleThumb: "#fff",
+    sizeActiveBorder: "rgba(0,0,0,0.45)", sizeInactiveBorder: "rgba(0,0,0,0.1)",
+    sizeActiveBg: "rgba(0,0,0,0.08)", sizeActiveText: "#111", sizeInactiveText: "rgba(0,0,0,0.35)",
+    navBorder: "rgba(0,0,0,0.08)", navBg: "rgba(0,0,0,0.03)",
+    tzActiveBg: "rgba(0,0,0,0.07)", tzActiveText: "#111", tzInactiveText: "rgba(0,0,0,0.5)",
+  };
+}
+
 interface ToggleRowProps {
   label: string;
   description?: string;
   value: boolean;
   onToggle: () => void;
+  c: Colors;
 }
 
-function ToggleRow({ label, description, value, onToggle }: ToggleRowProps) {
+function ToggleRow({ label, description, value, onToggle, c }: ToggleRowProps) {
   return (
     <div
       style={{
@@ -26,13 +56,13 @@ function ToggleRow({ label, description, value, onToggle }: ToggleRowProps) {
         justifyContent: "space-between",
         gap: "2rem",
         padding: "0.75rem 0",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        borderBottom: `1px solid ${c.divider}`,
       }}
     >
       <div>
-        <div style={{ color: "#fff", fontSize: "0.9rem", fontWeight: 400 }}>{label}</div>
+        <div style={{ color: c.text, fontSize: "0.9rem", fontWeight: 400 }}>{label}</div>
         {description && (
-          <div style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.75rem", marginTop: "0.15rem" }}>
+          <div style={{ color: c.textFaint, fontSize: "0.75rem", marginTop: "0.15rem" }}>
             {description}
           </div>
         )}
@@ -46,7 +76,7 @@ function ToggleRow({ label, description, value, onToggle }: ToggleRowProps) {
           borderRadius: "9999px",
           border: "none",
           cursor: "pointer",
-          background: value ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.15)",
+          background: value ? c.toggleOn : c.toggleOff,
           position: "relative",
           transition: "background 0.2s ease",
           outline: "none",
@@ -61,7 +91,7 @@ function ToggleRow({ label, description, value, onToggle }: ToggleRowProps) {
             width: "1rem",
             height: "1rem",
             borderRadius: "50%",
-            background: value ? "#000" : "rgba(255,255,255,0.5)",
+            background: value ? c.toggleThumb : "rgba(128,128,128,0.5)",
             transition: "left 0.2s ease, background 0.2s ease",
           }}
         />
@@ -70,7 +100,7 @@ function ToggleRow({ label, description, value, onToggle }: ToggleRowProps) {
   );
 }
 
-function SizePicker({ value, onChange }: { value: FontSize; onChange: (s: FontSize) => void }) {
+function SizePicker({ value, onChange, c }: { value: FontSize; onChange: (s: FontSize) => void; c: Colors }) {
   const labels: Record<FontSize, string> = { sm: "Small", md: "Medium", lg: "Large" };
   return (
     <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -84,9 +114,9 @@ function SizePicker({ value, onChange }: { value: FontSize; onChange: (s: FontSi
               flex: 1,
               padding: "0.4rem 0",
               borderRadius: "0.4rem",
-              border: active ? "1px solid rgba(255,255,255,0.5)" : "1px solid rgba(255,255,255,0.1)",
-              background: active ? "rgba(255,255,255,0.12)" : "transparent",
-              color: active ? "#fff" : "rgba(255,255,255,0.4)",
+              border: `1px solid ${active ? c.sizeActiveBorder : c.sizeInactiveBorder}`,
+              background: active ? c.sizeActiveBg : "transparent",
+              color: active ? c.sizeActiveText : c.sizeInactiveText,
               fontSize: "0.8rem",
               fontWeight: active ? 500 : 400,
               cursor: "pointer",
@@ -95,6 +125,37 @@ function SizePicker({ value, onChange }: { value: FontSize; onChange: (s: FontSi
             }}
           >
             {labels[size]}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ThemePicker({ value, onChange, c }: { value: Theme; onChange: (t: Theme) => void; c: Colors }) {
+  return (
+    <div style={{ display: "flex", gap: "0.5rem" }}>
+      {(["dark", "light"] as Theme[]).map((t) => {
+        const active = value === t;
+        return (
+          <button
+            key={t}
+            onClick={() => onChange(t)}
+            style={{
+              flex: 1,
+              padding: "0.4rem 0",
+              borderRadius: "0.4rem",
+              border: `1px solid ${active ? c.sizeActiveBorder : c.sizeInactiveBorder}`,
+              background: active ? c.sizeActiveBg : "transparent",
+              color: active ? c.sizeActiveText : c.sizeInactiveText,
+              fontSize: "0.8rem",
+              fontWeight: active ? 500 : 400,
+              cursor: "pointer",
+              transition: "all 0.15s ease",
+              outline: "none",
+            }}
+          >
+            {t.charAt(0).toUpperCase() + t.slice(1)}
           </button>
         );
       })}
@@ -121,10 +182,12 @@ function ChevronLeft() {
 
 export default function SettingsModal({ open, settings, onClose, onChange }: Props) {
   const [page, setPage] = useState<"main" | "timezone">("main");
-
+  const isDark = settings.theme === "dark";
+  const c = getColors(isDark);
+  const panelBg = isDark ? "rgba(18,18,18,0.95)" : "rgba(245,245,245,0.97)";
+  const panelBorder = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)";
   const currentTzLabel = TIMEZONE_OPTIONS.find((t) => t.value === settings.timezone)?.label ?? settings.timezone;
 
-  // Reset to main page when modal closes
   const handleBackdropClick = () => {
     onClose();
     setTimeout(() => setPage("main"), 300);
@@ -138,7 +201,7 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
         style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(0,0,0,0.4)",
+          background: "rgba(0,0,0,0.35)",
           opacity: open ? 1 : 0,
           pointerEvents: open ? "auto" : "none",
           transition: "opacity 0.25s ease",
@@ -153,15 +216,15 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
           top: "4.5rem",
           left: "1.5rem",
           width: "18rem",
-          background: "rgba(18,18,18,0.95)",
-          border: "1px solid rgba(255,255,255,0.08)",
+          background: panelBg,
+          border: `1px solid ${panelBorder}`,
           borderRadius: "0.75rem",
           backdropFilter: "blur(16px)",
           zIndex: 20,
           opacity: open ? 1 : 0,
           transform: open ? "translateY(0) scale(1)" : "translateY(-0.5rem) scale(0.97)",
           pointerEvents: open ? "auto" : "none",
-          transition: "opacity 0.25s ease, transform 0.25s ease",
+          transition: "opacity 0.25s ease, transform 0.25s ease, background 0.3s ease",
           overflow: "hidden",
         }}
       >
@@ -178,7 +241,7 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
           <div style={{ width: "50%", padding: "1.25rem 1.5rem 1.5rem", flexShrink: 0 }}>
             <div
               style={{
-                color: "rgba(255,255,255,0.4)",
+                color: c.textMuted,
                 fontSize: "0.7rem",
                 fontWeight: 600,
                 letterSpacing: "0.1em",
@@ -189,32 +252,23 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
               Settings
             </div>
 
-            <ToggleRow
-              label="Show seconds"
-              value={settings.showSeconds}
-              onToggle={() => onChange({ showSeconds: !settings.showSeconds })}
-            />
-            <ToggleRow
-              label="12-hour format"
-              description="Adds AM / PM"
-              value={settings.hour12}
-              onToggle={() => onChange({ hour12: !settings.hour12 })}
-            />
-            <ToggleRow
-              label="Show date"
-              value={settings.showDate}
-              onToggle={() => onChange({ showDate: !settings.showDate })}
-            />
+            <ToggleRow label="Show seconds" value={settings.showSeconds} onToggle={() => onChange({ showSeconds: !settings.showSeconds })} c={c} />
+            <ToggleRow label="12-hour format" description="Adds AM / PM" value={settings.hour12} onToggle={() => onChange({ hour12: !settings.hour12 })} c={c} />
+            <ToggleRow label="Show date" value={settings.showDate} onToggle={() => onChange({ showDate: !settings.showDate })} c={c} />
 
             {/* Size pickers */}
             <div style={{ padding: "0.75rem 0 0", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               <div>
-                <div style={{ color: "#fff", fontSize: "0.9rem", fontWeight: 400, marginBottom: "0.5rem" }}>Time size</div>
-                <SizePicker value={settings.fontSize} onChange={(s) => onChange({ fontSize: s })} />
+                <div style={{ color: c.text, fontSize: "0.9rem", fontWeight: 400, marginBottom: "0.5rem" }}>Time size</div>
+                <SizePicker value={settings.fontSize} onChange={(s) => onChange({ fontSize: s })} c={c} />
               </div>
               <div>
-                <div style={{ color: "#fff", fontSize: "0.9rem", fontWeight: 400, marginBottom: "0.5rem" }}>Date size</div>
-                <SizePicker value={settings.dateFontSize} onChange={(s) => onChange({ dateFontSize: s })} />
+                <div style={{ color: c.text, fontSize: "0.9rem", fontWeight: 400, marginBottom: "0.5rem" }}>Date size</div>
+                <SizePicker value={settings.dateFontSize} onChange={(s) => onChange({ dateFontSize: s })} c={c} />
+              </div>
+              <div>
+                <div style={{ color: c.text, fontSize: "0.9rem", fontWeight: 400, marginBottom: "0.5rem" }}>Theme</div>
+                <ThemePicker value={settings.theme} onChange={(t) => onChange({ theme: t })} c={c} />
               </div>
 
               {/* Timezone nav row */}
@@ -227,9 +281,9 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
                   width: "100%",
                   padding: "0.55rem 0.7rem",
                   borderRadius: "0.4rem",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  background: "rgba(255,255,255,0.04)",
-                  color: "#fff",
+                  border: `1px solid ${c.navBorder}`,
+                  background: c.navBg,
+                  color: c.text,
                   cursor: "pointer",
                   outline: "none",
                   transition: "background 0.15s ease",
@@ -237,9 +291,9 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
               >
                 <div style={{ textAlign: "left" }}>
                   <div style={{ fontSize: "0.9rem", fontWeight: 400 }}>Timezone</div>
-                  <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", marginTop: "0.1rem" }}>{currentTzLabel}</div>
+                  <div style={{ fontSize: "0.75rem", color: c.textMuted, marginTop: "0.1rem" }}>{currentTzLabel}</div>
                 </div>
-                <span style={{ color: "rgba(255,255,255,0.35)", display: "flex" }}><ChevronRight /></span>
+                <span style={{ color: c.textMuted, display: "flex" }}><ChevronRight /></span>
               </button>
             </div>
           </div>
@@ -247,14 +301,14 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
           {/* ── Timezone page ── */}
           <div style={{ width: "50%", flexShrink: 0, display: "flex", flexDirection: "column" }}>
             {/* Header */}
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "1.25rem 1.5rem 0.75rem", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "1.25rem 1.5rem 0.75rem", borderBottom: `1px solid ${c.divider}` }}>
               <button
                 onClick={() => setPage("main")}
-                style={{ background: "none", border: "none", color: "rgba(255,255,255,0.75)", cursor: "pointer", padding: "0.1rem", display: "flex", outline: "none" }}
+                style={{ background: "none", border: "none", color: c.text, cursor: "pointer", padding: "0.1rem", display: "flex", outline: "none" }}
               >
                 <ChevronLeft />
               </button>
-              <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+              <span style={{ color: c.textMuted, fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
                 Timezone
               </span>
             </div>
@@ -275,8 +329,8 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
                       padding: "0.55rem 1.25rem",
                       borderRadius: "0",
                       border: "none",
-                      background: active ? "rgba(255,255,255,0.1)" : "transparent",
-                      color: active ? "#fff" : "rgba(255,255,255,0.55)",
+                      background: active ? c.tzActiveBg : "transparent",
+                      color: active ? c.tzActiveText : c.tzInactiveText,
                       fontSize: "0.85rem",
                       fontWeight: active ? 500 : 400,
                       cursor: "pointer",

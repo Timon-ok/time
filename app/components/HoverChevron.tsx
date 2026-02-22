@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Theme } from "../types/settings";
 
 const PROXIMITY_RADIUS = 160;
 
@@ -8,7 +9,7 @@ function distanceFromCorner(x: number, y: number): number {
   return Math.sqrt(x * x + y * y);
 }
 
-export default function HoverChevron({ onClick }: { onClick: () => void }) {
+export default function HoverChevron({ onClick, theme }: { onClick: () => void; theme: Theme }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function HoverChevron({ onClick }: { onClick: () => void }) {
         height="40"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="rgba(255,255,255,0.45)"
+        stroke={theme === "dark" ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.45)"}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
