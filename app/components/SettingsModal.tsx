@@ -69,6 +69,38 @@ function ToggleRow({ label, description, value, onToggle }: ToggleRowProps) {
   );
 }
 
+function SizePicker({ value, onChange }: { value: FontSize; onChange: (s: FontSize) => void }) {
+  const labels: Record<FontSize, string> = { sm: "Small", md: "Medium", lg: "Large" };
+  return (
+    <div style={{ display: "flex", gap: "0.5rem" }}>
+      {(["sm", "md", "lg"] as FontSize[]).map((size) => {
+        const active = value === size;
+        return (
+          <button
+            key={size}
+            onClick={() => onChange(size)}
+            style={{
+              flex: 1,
+              padding: "0.4rem 0",
+              borderRadius: "0.4rem",
+              border: active ? "1px solid rgba(255,255,255,0.5)" : "1px solid rgba(255,255,255,0.1)",
+              background: active ? "rgba(255,255,255,0.12)" : "transparent",
+              color: active ? "#fff" : "rgba(255,255,255,0.4)",
+              fontSize: "0.8rem",
+              fontWeight: active ? 500 : 400,
+              cursor: "pointer",
+              transition: "all 0.15s ease",
+              outline: "none",
+            }}
+          >
+            {labels[size]}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function SettingsModal({ open, settings, onClose, onChange }: Props) {
   return (
     <>
@@ -135,37 +167,15 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
           onToggle={() => onChange({ showDate: !settings.showDate })}
         />
 
-        {/* Size picker */}
-        <div style={{ padding: "0.75rem 0 0" }}>
-          <div style={{ color: "#fff", fontSize: "0.9rem", fontWeight: 400, marginBottom: "0.6rem" }}>
-            Clock size
+        {/* Size pickers */}
+        <div style={{ padding: "0.75rem 0 0", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          <div>
+            <div style={{ color: "#fff", fontSize: "0.9rem", fontWeight: 400, marginBottom: "0.5rem" }}>Time size</div>
+            <SizePicker value={settings.fontSize} onChange={(s) => onChange({ fontSize: s })} />
           </div>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            {(["sm", "md", "lg"] as FontSize[]).map((size) => {
-              const active = settings.fontSize === size;
-              const labels: Record<FontSize, string> = { sm: "Small", md: "Medium", lg: "Large" };
-              return (
-                <button
-                  key={size}
-                  onClick={() => onChange({ fontSize: size })}
-                  style={{
-                    flex: 1,
-                    padding: "0.4rem 0",
-                    borderRadius: "0.4rem",
-                    border: active ? "1px solid rgba(255,255,255,0.5)" : "1px solid rgba(255,255,255,0.1)",
-                    background: active ? "rgba(255,255,255,0.12)" : "transparent",
-                    color: active ? "#fff" : "rgba(255,255,255,0.4)",
-                    fontSize: "0.8rem",
-                    fontWeight: active ? 500 : 400,
-                    cursor: "pointer",
-                    transition: "all 0.15s ease",
-                    outline: "none",
-                  }}
-                >
-                  {labels[size]}
-                </button>
-              );
-            })}
+          <div>
+            <div style={{ color: "#fff", fontSize: "0.9rem", fontWeight: 400, marginBottom: "0.5rem" }}>Date size</div>
+            <SizePicker value={settings.dateFontSize} onChange={(s) => onChange({ dateFontSize: s })} />
           </div>
         </div>
       </div>

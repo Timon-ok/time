@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ClockSettings, fontSizeMap } from "../types/settings";
+import { ClockSettings, fontSizeMap, dateSizeMap } from "../types/settings";
 
 const TZ = "Europe/Zurich";
 
@@ -57,7 +57,7 @@ export default function Clock({ settings }: Props) {
       {settings.showDate && (
         <div
           style={{
-            fontSize: "clamp(1rem, 3vw, 2rem)",
+            fontSize: dateSizeMap[settings.dateFontSize],
             fontWeight: 300,
             color: "rgba(255,255,255,0.35)",
             marginTop: "1.5rem",
