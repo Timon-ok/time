@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ClockSettings, fontSizeMap, dateSizeMap } from "../types/settings";
-
-const TZ = "Europe/Zurich";
 
 interface Props {
   settings: ClockSettings;
@@ -12,17 +10,20 @@ interface Props {
 export default function Clock({ settings }: Props) {
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
+  const settingsRef = useRef(settings);
+  settingsRef.current = settings;
 
   useEffect(() => {
     const update = () => {
+      const s = settingsRef.current;
       const now = new Date();
       setTime(
-        now.toLocaleTimeString(settings.hour12 ? "en-US" : "de-CH", {
+        now.toLocaleTimeString(s.hour12 ? "en-US" : "de-CH", {
           hour: "2-digit",
           minute: "2-digit",
-          ...(settings.showSeconds ? { second: "2-digit" } : {}),
-          hour12: settings.hour12,
-          timeZone: TZ,
+          ...(s.showSeconds ? { second: "2-digit" } : {}),
+          hour12: s.hour12,
+          timeZone: s.timezone,
         })
       );
       setDate(
@@ -31,7 +32,7 @@ export default function Clock({ settings }: Props) {
           month: "long",
           day: "numeric",
           year: "numeric",
-          timeZone: TZ,
+          timeZone: s.timezone,
         })
       );
     };
@@ -39,7 +40,7 @@ export default function Clock({ settings }: Props) {
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, [settings.showSeconds, settings.hour12]);;
+  }, []);
 
   return (
     <div style={{ textAlign: "center", userSelect: "none" }}>

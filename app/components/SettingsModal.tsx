@@ -1,6 +1,6 @@
 "use client";
 
-import { ClockSettings, FontSize } from "../types/settings";
+import { ClockSettings, FontSize, TIMEZONE_OPTIONS } from "../types/settings";
 
 interface Props {
   open: boolean;
@@ -176,6 +176,31 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
           <div>
             <div style={{ color: "#fff", fontSize: "0.9rem", fontWeight: 400, marginBottom: "0.5rem" }}>Date size</div>
             <SizePicker value={settings.dateFontSize} onChange={(s) => onChange({ dateFontSize: s })} />
+          </div>
+          <div>
+            <div style={{ color: "#fff", fontSize: "0.9rem", fontWeight: 400, marginBottom: "0.5rem" }}>Timezone</div>
+            <select
+              value={settings.timezone}
+              onChange={(e) => onChange({ timezone: e.target.value })}
+              style={{
+                width: "100%",
+                padding: "0.4rem 0.6rem",
+                borderRadius: "0.4rem",
+                border: "1px solid rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.06)",
+                color: "#fff",
+                fontSize: "0.8rem",
+                cursor: "pointer",
+                outline: "none",
+                appearance: "none",
+              }}
+            >
+              {TIMEZONE_OPTIONS.map((tz) => (
+                <option key={tz.value} value={tz.value} style={{ background: "#1a1a1a" }}>
+                  {tz.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
