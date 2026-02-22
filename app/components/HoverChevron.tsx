@@ -10,15 +10,21 @@ function distanceFromCorner(x: number, y: number): number {
 }
 
 export default function HoverChevron({ onClick, theme }: { onClick: () => void; theme: Theme }) {
-  const [visible, setVisible] = useState(false);
+  const [intro, setIntro] = useState(true);
+  const [near, setNear] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setIntro(false), 2500);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const dist = distanceFromCorner(e.clientX, e.clientY);
-      setVisible(dist <= PROXIMITY_RADIUS);
+      setNear(dist <= PROXIMITY_RADIUS);
     };
 
-    const handleMouseLeave = () => setVisible(false);
+    const handleMouseLeave = () => setNear(false);
 
     window.addEventListener("mousemove", handleMouseMove);
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
@@ -28,6 +34,8 @@ export default function HoverChevron({ onClick, theme }: { onClick: () => void; 
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
+
+  const visible = intro || near;
 
   return (
     <div
