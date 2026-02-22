@@ -18,7 +18,6 @@ function loadSettings(): ClockSettings {
 export function usePersistedSettings() {
   const [settings, setSettings] = useState<ClockSettings>(defaultSettings);
 
-  // Load from localStorage after mount (avoids SSR mismatch)
   useEffect(() => {
     setSettings(loadSettings());
   }, []);
