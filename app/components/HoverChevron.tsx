@@ -36,12 +36,12 @@ export default function HoverChevron() {
         left: "1.5rem",
         opacity: visible ? 1 : 0,
         transition: "opacity 0.3s ease",
-        pointerEvents: "none",
+        cursor: "pointer",
       }}
     >
       <svg
-        width="28"
-        height="28"
+        width="40"
+        height="40"
         viewBox="0 0 24 24"
         fill="none"
         stroke="rgba(255,255,255,0.45)"
