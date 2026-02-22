@@ -42,7 +42,7 @@ export default function Clock({ settings }: Props) {
   }, [settings.showSeconds, settings.hour12]);;
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "center", userSelect: "none" }}>
       <div
         style={{
           fontSize: "clamp(4rem, 16vw, 14rem)",
