@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ClockSettings } from "../types/settings";
 
 const TZ = "Europe/Zurich";
 
-export default function Clock() {
+interface Props {
+  settings: ClockSettings;
+}
+
+export default function Clock({ settings }: Props) {
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
 
@@ -12,11 +17,11 @@ export default function Clock() {
     const update = () => {
       const now = new Date();
       setTime(
-        now.toLocaleTimeString("de-CH", {
+        now.toLocaleTimeString(settings.hour12 ? "en-US" : "de-CH", {
           hour: "2-digit",
           minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
+          ...(settings.showSeconds ? { second: "2-digit" } : {}),
+          hour12: settings.hour12,
           timeZone: TZ,
         })
       );
@@ -34,7 +39,7 @@ export default function Clock() {
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [settings.showSeconds, settings.hour12]);;
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -49,18 +54,20 @@ export default function Clock() {
       >
         {time}
       </div>
-      <div
-        style={{
-          fontSize: "clamp(1rem, 3vw, 2rem)",
-          fontWeight: 300,
-          color: "rgba(255,255,255,0.35)",
-          marginTop: "1.5rem",
-          letterSpacing: "0.05em",
-          textTransform: "uppercase",
-        }}
-      >
-        {date}
-      </div>
+      {settings.showDate && (
+        <div
+          style={{
+            fontSize: "clamp(1rem, 3vw, 2rem)",
+            fontWeight: 300,
+            color: "rgba(255,255,255,0.35)",
+            marginTop: "1.5rem",
+            letterSpacing: "0.05em",
+            textTransform: "uppercase",
+          }}
+        >
+          {date}
+        </div>
+      )}
     </div>
   );
 }

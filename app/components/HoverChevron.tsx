@@ -8,7 +8,7 @@ function distanceFromCorner(x: number, y: number): number {
   return Math.sqrt(x * x + y * y);
 }
 
-export default function HoverChevron() {
+export default function HoverChevron({ onClick }: { onClick: () => void }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -30,6 +30,7 @@ export default function HoverChevron() {
 
   return (
     <div
+      onClick={onClick}
       style={{
         position: "fixed",
         top: "1.5rem",
