@@ -170,7 +170,6 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
           style={{
             display: "flex",
             width: "200%",
-            alignItems: "stretch",
             transform: page === "timezone" ? "translateX(-50%)" : "translateX(0)",
             transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
@@ -246,7 +245,7 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
           </div>
 
           {/* ── Timezone page ── */}
-          <div style={{ width: "50%", flexShrink: 0, display: "flex", flexDirection: "column", alignSelf: "stretch" }}>
+          <div style={{ width: "50%", flexShrink: 0, display: "flex", flexDirection: "column" }}>
             {/* Header */}
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "1.25rem 1.5rem 0.75rem", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
               <button
@@ -261,7 +260,7 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
             </div>
 
             {/* List */}
-            <div style={{ flex: 1, overflowY: "auto", padding: "0.5rem 0 0.75rem" }} className="tz-list">
+            <div style={{ overflowY: "auto", maxHeight: "24rem", padding: "0.5rem 0 0.75rem" }} className="tz-list">
               {TIMEZONE_OPTIONS.map((tz) => {
                 const active = settings.timezone === tz.value;
                 return (
