@@ -7,40 +7,52 @@ interface Props {
   settings: ClockSettings;
 }
 
+function computeTime(s: ClockSettings): string {
+  return new Date().toLocaleTimeString(s.hour12 ? "en-US" : "de-CH", {
+    hour: "2-digit",
+    minute: "2-digit",
+    ...(s.showSeconds ? { second: "2-digit" } : {}),
+    hour12: s.hour12,
+    timeZone: s.timezone,
+  });
+}
+
 export default function Clock({ settings }: Props) {
-  const [time, setTime] = useState("");
+  const [displayTime, setDisplayTime] = useState("");
   const [date, setDate] = useState("");
+  const [timeVisible, setTimeVisible] = useState(true);
+
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
 
+  // Tick every second — always update directly while visible
   useEffect(() => {
     const update = () => {
       const s = settingsRef.current;
-      const now = new Date();
-      setTime(
-        now.toLocaleTimeString(s.hour12 ? "en-US" : "de-CH", {
-          hour: "2-digit",
-          minute: "2-digit",
-          ...(s.showSeconds ? { second: "2-digit" } : {}),
-          hour12: s.hour12,
-          timeZone: s.timezone,
-        })
-      );
-      setDate(
-        now.toLocaleDateString("en-US", {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-          year: "numeric",
-          timeZone: s.timezone,
-        })
-      );
+      setDisplayTime(computeTime(s));
+      setDate(new Date().toLocaleDateString("en-US", {
+        weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: s.timezone,
+      }));
     };
-
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Crossfade when format changes: fade out → swap to fresh string → fade in
+  const formatKey = `${settings.showSeconds}-${settings.hour12}-${settings.timezone}`;
+  const prevFormatKey = useRef(formatKey);
+  useEffect(() => {
+    if (prevFormatKey.current === formatKey) return;
+    prevFormatKey.current = formatKey;
+    setTimeVisible(false);
+    const t = setTimeout(() => {
+      // Compute with the new format right now so the fade-in shows correct text immediately
+      setDisplayTime(computeTime(settingsRef.current));
+      setTimeVisible(true);
+    }, 150);
+    return () => clearTimeout(t);
+  }, [formatKey]);
 
   return (
     <div style={{ textAlign: "center", userSelect: "none" }}>
@@ -51,10 +63,12 @@ export default function Clock({ settings }: Props) {
           color: settings.theme === "dark" ? "#fff" : "#000",
           letterSpacing: "-0.02em",
           lineHeight: 1,
-          transition: "font-size 0.4s ease, color 0.3s ease",
+          opacity: timeVisible ? 1 : 0,
+          transform: timeVisible ? "translateY(0)" : "translateY(0.25rem)",
+          transition: "font-size 0.4s ease, color 0.3s ease, opacity 0.14s ease, transform 0.14s ease",
         }}
       >
-        {time}
+        {displayTime}
       </div>
       <div
         style={{
