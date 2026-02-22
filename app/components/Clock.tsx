@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ClockSettings } from "../types/settings";
+import { ClockSettings, fontSizeMap } from "../types/settings";
 
 const TZ = "Europe/Zurich";
 
@@ -45,7 +45,7 @@ export default function Clock({ settings }: Props) {
     <div style={{ textAlign: "center", userSelect: "none" }}>
       <div
         style={{
-          fontSize: "clamp(4rem, 16vw, 14rem)",
+          fontSize: fontSizeMap[settings.fontSize],
           fontWeight: 200,
           color: "#fff",
           letterSpacing: "-0.02em",

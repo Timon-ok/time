@@ -1,6 +1,6 @@
 "use client";
 
-import { ClockSettings } from "../types/settings";
+import { ClockSettings, FontSize } from "../types/settings";
 
 interface Props {
   open: boolean;
@@ -134,6 +134,40 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
           value={settings.showDate}
           onToggle={() => onChange({ showDate: !settings.showDate })}
         />
+
+        {/* Size picker */}
+        <div style={{ padding: "0.75rem 0 0" }}>
+          <div style={{ color: "#fff", fontSize: "0.9rem", fontWeight: 400, marginBottom: "0.6rem" }}>
+            Clock size
+          </div>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            {(["sm", "md", "lg"] as FontSize[]).map((size) => {
+              const active = settings.fontSize === size;
+              const labels: Record<FontSize, string> = { sm: "Small", md: "Medium", lg: "Large" };
+              return (
+                <button
+                  key={size}
+                  onClick={() => onChange({ fontSize: size })}
+                  style={{
+                    flex: 1,
+                    padding: "0.4rem 0",
+                    borderRadius: "0.4rem",
+                    border: active ? "1px solid rgba(255,255,255,0.5)" : "1px solid rgba(255,255,255,0.1)",
+                    background: active ? "rgba(255,255,255,0.12)" : "transparent",
+                    color: active ? "#fff" : "rgba(255,255,255,0.4)",
+                    fontSize: "0.8rem",
+                    fontWeight: active ? 500 : 400,
+                    cursor: "pointer",
+                    transition: "all 0.15s ease",
+                    outline: "none",
+                  }}
+                >
+                  {labels[size]}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </>
   );
