@@ -51,26 +51,28 @@ export default function Clock({ settings }: Props) {
           color: settings.theme === "dark" ? "#fff" : "#000",
           letterSpacing: "-0.02em",
           lineHeight: 1,
-          transition: "color 0.3s ease",
+          transition: "font-size 0.4s ease, color 0.3s ease",
         }}
       >
         {time}
       </div>
-      {settings.showDate && (
-        <div
-          style={{
-            fontSize: dateSizeMap[settings.dateFontSize],
-            fontWeight: 300,
-            color: settings.theme === "dark" ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.4)",
-            marginTop: "1.5rem",
-            letterSpacing: "0.05em",
-            textTransform: "uppercase",
-            transition: "color 0.3s ease",
-          }}
-        >
-          {date}
-        </div>
-      )}
+      <div
+        style={{
+          fontSize: dateSizeMap[settings.dateFontSize],
+          fontWeight: 300,
+          color: settings.theme === "dark" ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.4)",
+          letterSpacing: "0.05em",
+          textTransform: "uppercase",
+          overflow: "hidden",
+          opacity: settings.showDate ? 1 : 0,
+          maxHeight: settings.showDate ? "6rem" : "0",
+          marginTop: settings.showDate ? "1.5rem" : "0",
+          transform: settings.showDate ? "translateY(0)" : "translateY(-0.4rem)",
+          transition: "font-size 0.4s ease, color 0.3s ease, opacity 0.35s ease, max-height 0.35s ease, margin-top 0.35s ease, transform 0.35s ease",
+        }}
+      >
+        {date}
+      </div>
     </div>
   );
 }
