@@ -12,3 +12,12 @@ body {
   color: #fff;
   overflow: hidden;
 }
+
+/* Custom scrollbar for timezone list */
+.tz-list {
+  scrollbar-width: none;
+}
+
+.tz-list::-webkit-scrollbar {
+  display: none;
+}

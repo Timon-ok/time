@@ -113,7 +113,7 @@ function ChevronRight() {
 
 function ChevronLeft() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="15 18 9 12 15 6" />
     </svg>
   );
@@ -250,7 +250,7 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "1.25rem 1.5rem 0.75rem", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
               <button
                 onClick={() => setPage("main")}
-                style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", cursor: "pointer", padding: "0.1rem", display: "flex", outline: "none" }}
+                style={{ background: "none", border: "none", color: "rgba(255,255,255,0.75)", cursor: "pointer", padding: "0.1rem", display: "flex", outline: "none" }}
               >
                 <ChevronLeft />
               </button>
@@ -260,7 +260,7 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
             </div>
 
             {/* List */}
-            <div style={{ overflowY: "auto", maxHeight: "18rem", padding: "0.5rem 0.75rem 0.75rem" }}>
+            <div style={{ overflowY: "auto", maxHeight: "18rem", padding: "0.5rem 0 0.75rem" }} className="tz-list">
               {TIMEZONE_OPTIONS.map((tz) => {
                 const active = settings.timezone === tz.value;
                 return (
@@ -272,8 +272,8 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
                       alignItems: "center",
                       justifyContent: "space-between",
                       width: "100%",
-                      padding: "0.55rem 0.6rem",
-                      borderRadius: "0.4rem",
+                      padding: "0.55rem 1.25rem",
+                      borderRadius: "0",
                       border: "none",
                       background: active ? "rgba(255,255,255,0.1)" : "transparent",
                       color: active ? "#fff" : "rgba(255,255,255,0.55)",
@@ -283,6 +283,7 @@ export default function SettingsModal({ open, settings, onClose, onChange }: Pro
                       textAlign: "left",
                       outline: "none",
                       transition: "background 0.15s ease, color 0.15s ease",
+                      boxSizing: "border-box",
                     }}
                   >
                     {tz.label}
