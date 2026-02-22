@@ -25,7 +25,6 @@ export default function Clock({ settings }: Props) {
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
 
-  // Tick every second — always update directly while visible
   useEffect(() => {
     const update = () => {
       const s = settingsRef.current;
@@ -39,7 +38,6 @@ export default function Clock({ settings }: Props) {
     return () => clearInterval(interval);
   }, []);
 
-  // Crossfade when format changes: fade out → swap to fresh string → fade in
   const formatKey = `${settings.showSeconds}-${settings.hour12}-${settings.timezone}`;
   const prevFormatKey = useRef(formatKey);
   useEffect(() => {
@@ -47,7 +45,6 @@ export default function Clock({ settings }: Props) {
     prevFormatKey.current = formatKey;
     setTimeVisible(false);
     const t = setTimeout(() => {
-      // Compute with the new format right now so the fade-in shows correct text immediately
       setDisplayTime(computeTime(settingsRef.current));
       setTimeVisible(true);
     }, 150);
